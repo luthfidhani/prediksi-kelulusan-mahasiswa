@@ -30,6 +30,6 @@ Aplikasi ini bertujuan untuk memprediksi apakah seorang mahasiswa akan lulus tep
 
 
 ## 📸 Screenshot 📸
-![Home](images/home.png)
-![Home](images/tepat_waktu.png)
-![Home](images/tidak_tepat_waktu.png)
+![Home](images/home.jpeg)
+![Home](images/tepat_waktu.jpeg)
+![Home](images/tidak_tepat_waktu.jpeg)
