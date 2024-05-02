@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Graduation Prediction</title>
+        <link rel="stylesheet"
+              href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <style>
+        .container {
+            margin-top: 50px;
+        }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="card text-white bg-primary mb-3" style="height: 10rem;">
+                <div class="card-body">
+                    <div class="container">
+                        <h3 class="text-center mt-5">Graduation Prediction</h3>
+                    </div>
+                </div>
+            </div>
+            {% if data == "Tepat waktu" %}
+            <div class="alert alert-success shadow-lg p-3 my-5 rounded">
+                <div class="m-3">
+                    <center>
+                        <h1 class="mt-5">✅</h1>
+                        <h1 class="mb-5">You will most graduate on time 🙂</h1>
+                        <a href="/" class="btn btn-primary">Home</a>
+                    </center>
+                </div>
+            </div>
+            {% elif data == "Tidak tepat waktu" %}
+            <div class="alert alert-warning shadow-lg p-3 my-5 rounded">
+                <div class="m-3">
+                    <center>
+                        <h1 class="mt-5">⚠️</h1>
+                        <h1 class="mb-5">It's likely that you won't graduate on time 🥺</h1>
+                        <a href="/" class="btn btn-primary">Home</a>
+                    </center>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-danger shadow-lg p-3 my-5 rounded">
+                <div class="m-3">
+                    <center>
+                        <h1 class="mt-5">💀</h1>
+                        <h1 class="mb-5">Woops!!!</h1>
+                        <a href="/" class="btn btn-primary">Home</a>
+                    </center>
+                </div>
+            </div>
+            {% endif %}
+            <br>
+            <br>
+            <br>
+        </div>
+    </body>
+</html>

@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Prediksi Kelulusan</title>
+        <title>Graduation Prediction</title>
         <link rel="stylesheet"
               href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <style>
@@ -17,28 +17,32 @@
             <div class="card text-white bg-primary mb-3" style="height: 10rem;">
                 <div class="card-body">
                     <div class="container">
-                        <h3 class="text-center mt-5">Prediksi Kelulusan</h3>
+                        <h3 class="text-center mt-5">Graduation Prediction</h3>
                     </div>
                 </div>
             </div>
-            <form method="POST">
+            <form action="/result" method="POST">
                 <div class="form-group">
                     <label for="asal_sma">Asal SMA:</label>
-                    <input type="text" class="form-control" id="asal_sma" name="asal_sma" {% if data.request[0] %} value = "{{ data.request[0].asal_sma }}" {% endif %} required>
+                    <input type="text"
+                           class="form-control"
+                           id="asal_sma"
+                           name="asal_sma"
+                           {% if data.request[0] %}value = "{{ data.request[0].asal_sma }}"{% endif %}
+                           required>
                 </div>
                 <div class="row">
                     <div class="col-md-6 form-group">
                         <label for="n_toefl">TOEFL:</label>
-                        <input type="number" class="form-control" id="n_toefl" name="n_toefl" {% if data.request[0] %}value = {{ data.request[0].n_toefl }} {% endif %} required>
+                        <input type="number" class="form-control" id="n_toefl" name="n_toefl" {% if data.request[0] %}value = {{ data.request[0].n_toefl }}{% endif %} required>
                     </div>
                     <div class="col-md-6 form-group">
                         <label for="prodi_code">Prodi:</label>
                         <select class="form-control" id="prodi_code" name="prodi_code" required>
                             {% for prodi, code in data.vars.prodi %}
-                            <option value={{ code }}
-                                    {% if data.request[0] and data.request[0].prodi_code == code %}selected{% endif %}>
-                                {{ prodi }}
-                            </option>
+                                <option value={{ code }} {% if data.request[0] and data.request[0].prodi_code == code %}selected{% endif %}>
+                                    {{ prodi }}
+                                </option>
                             {% endfor %}
                         </select>
                     </div>
@@ -46,10 +50,9 @@
                         <label for="jalur_code">Jalur Masuk:</label>
                         <select class="form-control" id="jalur_code" name="jalur_code" required>
                             {% for jalur, code in data.vars.jalur %}
-                            <option value={{ code }}
-                                    {% if data.request[0] and data.request[0].jalur_code == code %}selected{% endif %}>
-                                {{ jalur }}
-                            </option>
+                                <option value={{ code }} {% if data.request[0] and data.request[0].jalur_code == code %}selected{% endif %}>
+                                    {{ jalur }}
+                                </option>
                             {% endfor %}
                         </select>
                     </div>
@@ -60,23 +63,16 @@
                                 name="jenis_kelamin_code"
                                 required>
                             {% for gender, code in data.vars.jenis_kelamin %}
-                            <option value={{ code }}
-                                    {% if data and data.request[0].jenis_kelamin_code == code %}selected{% endif %}>
-                                {{ gender }}
-                            </option>
+                                <option value={{ code }} {% if data and data.request[0].jenis_kelamin_code == code %}selected{% endif %}>
+                                    {{ gender }}
+                                </option>
                             {% endfor %}
                         </select>
                     </div>
                     {% for i in range(1, 15) %}
                         <div class="col-md-6 form-group">
                             <label for="ip_semester_{{ i }}">IP Semester {{ i }}:</label>
-                            <input type="number"
-                                class="form-control"
-                                id="ip_semester_{{ i }}"
-                                name="ip_semester_{{ i }}"
-                                step="0.001"
-                                {% if data.request[0] %}value = {{ data.request[0].ips[i-1]  }} {% endif %}
-                            >
+                            <input type="number" class="form-control" id="ip_semester_{{ i }}" name="ip_semester_{{ i }}" step="0.001" {% if data.request[0] %}value = {{ data.request[0].ips[i-1] }}{% endif %}>
                         </div>
                     {% endfor %}
                 </div>
@@ -101,6 +97,23 @@
                     </div>
                 {% endif %}
             {% endif %}
+            <!-- Modal -->
+            <div class="modal fade"
+                 tabindex="-1"
+                 aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    </div>
+                </div>
+            </div>
             <br>
             <br>
             <br>

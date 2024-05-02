@@ -72,6 +72,34 @@ def index():
         return render_template("index.html", data=data)
     return render_template("index.html", data=data)
 
+@app.route("/result", methods=["GET", "POST"])
+def result():
+    if request.method == "POST":
+        asal_sma = request.form["asal_sma"]
+        n_toefl = int(request.form["n_toefl"])
+        prodi_code = int(request.form["prodi_code"])
+        jenis_kelamin_code = int(request.form["jenis_kelamin_code"])
+        jalur_code = int(request.form["jalur_code"])
+
+        ips = []
+        for i in range(1, 15):
+            ip = request.form[f"ip_semester_{i}"]
+            if ip:
+                ips.append(float(request.form[f"ip_semester_{i}"]))
+        ips = np.array(ips, dtype=float)
+
+        data = predict(
+            n_toefl=n_toefl,
+            ipk=np.mean(ips),
+            jumlah_semester=len(ips),
+            prodi_code=prodi_code,
+            jenis_kelamin_code=jenis_kelamin_code,
+            jalur_code=jalur_code,
+        )[0]
+
+        return render_template("result.html", data=data)
+    return render_template("result.html", data=None)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
