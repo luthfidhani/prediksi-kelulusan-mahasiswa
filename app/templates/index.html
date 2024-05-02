@@ -23,20 +23,66 @@
             </div>
             <form method="POST">
                 <div class="form-group">
-                    <label for="jumlah_semester">Jumlah Semester:</label>
-                    <input type="number" class="form-control" id="jumlah_semester" name="jumlah_semester" {% if data.jumlah_semester %}value = {{ data.jumlah_semester }}{% endif %} required>
+                    <label for="asal_sma">Asal SMA:</label>
+                    <input type="text" class="form-control" id="asal_sma" name="asal_sma" {% if data.request[0] %} value = "{{ data.request[0].asal_sma }}" {% endif %} required>
                 </div>
-                <div class="form-group">
-                    <label for="jenjang">Jenjang:</label>
-                    <select class="form-control" id="jenjang" name="jenjang" required>
-                        <option value="1" {% if data.jenjang == "1" %} selected {% endif %}>S1</option>
-                        <option value="2" {% if data.jenjang == "2" %} selected {% endif %}>D4</option>
-                        <option value="3" {% if data.jenjang == "3" %} selected {% endif %}>D3</option>
-                    </select>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label for="n_toefl">TOEFL:</label>
+                        <input type="number" class="form-control" id="n_toefl" name="n_toefl" {% if data.request[0] %}value = {{ data.request[0].n_toefl }} {% endif %} required>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="prodi_code">Prodi:</label>
+                        <select class="form-control" id="prodi_code" name="prodi_code" required>
+                            {% for prodi, code in data.vars.prodi %}
+                            <option value={{ code }}
+                                    {% if data.request[0] and data.request[0].prodi_code == code %}selected{% endif %}>
+                                {{ prodi }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="jalur_code">Jalur Masuk:</label>
+                        <select class="form-control" id="jalur_code" name="jalur_code" required>
+                            {% for jalur, code in data.vars.jalur %}
+                            <option value={{ code }}
+                                    {% if data.request[0] and data.request[0].jalur_code == code %}selected{% endif %}>
+                                {{ jalur }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="jenis_kelamin_code">Jenis Kelamin:</label>
+                        <select class="form-control"
+                                id="jenis_kelamin_code"
+                                name="jenis_kelamin_code"
+                                required>
+                            {% for gender, code in data.vars.jenis_kelamin %}
+                            <option value={{ code }}
+                                    {% if data and data.request[0].jenis_kelamin_code == code %}selected{% endif %}>
+                                {{ gender }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% for i in range(1, 15) %}
+                        <div class="col-md-6 form-group">
+                            <label for="ip_semester_{{ i }}">IP Semester {{ i }}:</label>
+                            <input type="number"
+                                class="form-control"
+                                id="ip_semester_{{ i }}"
+                                name="ip_semester_{{ i }}"
+                                step="0.001"
+                                {% if data.request[0] %}value = {{ data.request[0].ips[i-1]  }} {% endif %}
+                            >
+                        </div>
+                    {% endfor %}
                 </div>
                 <button type="submit" class="btn btn-primary">Prediksi</button>
             </form>
-            {% if data %}
+            {% if data.prediction[0] %}
                 {% if data.prediction == "Tepat waktu" %}
                     <div class="alert alert-success shadow-lg p-3 my-5 rounded">
                         <div class="m-3">
@@ -55,6 +101,9 @@
                     </div>
                 {% endif %}
             {% endif %}
+            <br>
+            <br>
+            <br>
         </div>
     </body>
 </html>
