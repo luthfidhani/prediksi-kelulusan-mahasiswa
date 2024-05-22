@@ -15,14 +15,15 @@ jalur = [
 ]
 
 prodi = [
-    ("S1 - Informatika", 3),
-    ("S1 - Sistem Informasi", 4),
-    ("S1 - Teknik Elektro", 6),
-    ("S1 - Manajemen Rekayasa", 7),
-    ("S1 - Teknik Bioproses", 8),
-    ("D4 - Sarjana Terapan Teknologi Rekayasa Perangkat Lunak", 2),
-    ("D3 - Teknologi Informasi", 1),
-    ("D3 - Teknologi Komputer", 5),
+    # (Nama prodi, kode prodi, minimal studi dalam semester)
+    ("S1 - Informatika", 3, 6),
+    ("S1 - Sistem Informasi", 4, 6),
+    ("S1 - Teknik Elektro", 6, 6),
+    ("S1 - Manajemen Rekayasa", 7, 6),
+    ("S1 - Teknik Bioproses", 8, 6),
+    ("D4 - Sarjana Terapan Teknologi Rekayasa Perangkat Lunak", 2, 6),
+    ("D3 - Teknologi Informasi", 1, 5),
+    ("D3 - Teknologi Komputer", 5, 5),
 ]
 
 jenis_kelamin = [

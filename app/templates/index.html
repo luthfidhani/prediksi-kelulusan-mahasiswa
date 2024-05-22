@@ -28,19 +28,19 @@
                            class="form-control"
                            id="asal_sma"
                            name="asal_sma"
-                           {% if data.request[0] %}value = "{{ data.request[0].asal_sma }}"{% endif %}
+                           {% if data.request.asal_sma %}value = "{{ data.request.asal_sma }}"{% endif %}
                            required>
                 </div>
                 <div class="row">
                     <div class="col-md-6 form-group">
                         <label for="n_toefl">TOEFL:</label>
-                        <input type="number" class="form-control" id="n_toefl" name="n_toefl" {% if data.request[0] %}value = {{ data.request[0].n_toefl }}{% endif %} required>
+                        <input type="number" class="form-control" id="n_toefl" name="n_toefl" {% if data.request.n_toefl %}value = {{ data.request.n_toefl }}{% endif %} required>
                     </div>
                     <div class="col-md-6 form-group">
                         <label for="prodi_code">Prodi:</label>
                         <select class="form-control" id="prodi_code" name="prodi_code" required>
-                            {% for prodi, code in data.vars.prodi %}
-                                <option value={{ code }} {% if data.request[0] and data.request[0].prodi_code == code %}selected{% endif %}>
+                            {% for prodi, code, _ in data.vars.prodi %}
+                                <option value={{ code }} {% if data and data.request.prodi_code == code %}selected{% endif %}>
                                     {{ prodi }}
                                 </option>
                             {% endfor %}
@@ -50,7 +50,7 @@
                         <label for="jalur_code">Jalur Masuk:</label>
                         <select class="form-control" id="jalur_code" name="jalur_code" required>
                             {% for jalur, code in data.vars.jalur %}
-                                <option value={{ code }} {% if data.request[0] and data.request[0].jalur_code == code %}selected{% endif %}>
+                                <option value={{ code }} {% if data and data.request.jalur_code == code %}selected{% endif %}>
                                     {{ jalur }}
                                 </option>
                             {% endfor %}
@@ -63,7 +63,7 @@
                                 name="jenis_kelamin_code"
                                 required>
                             {% for gender, code in data.vars.jenis_kelamin %}
-                                <option value={{ code }} {% if data and data.request[0].jenis_kelamin_code == code %}selected{% endif %}>
+                                <option value={{ code }} {% if data and data.request.jenis_kelamin_code == code %}selected{% endif %}>
                                     {{ gender }}
                                 </option>
                             {% endfor %}
@@ -72,30 +72,20 @@
                     {% for i in range(1, 15) %}
                         <div class="col-md-6 form-group">
                             <label for="ip_semester_{{ i }}">IP Semester {{ i }}:</label>
-                            <input type="number" class="form-control" id="ip_semester_{{ i }}" name="ip_semester_{{ i }}" step="0.001" {% if data.request[0] %}value = {{ data.request[0].ips[i-1] }}{% endif %}>
+                            <input type="number" class="form-control" id="ip_semester_{{ i }}" name="ip_semester_{{ i }}" step="0.001" {% if data.request %} value = {{ data.request.ips[i-1] }}{% endif %} >
                         </div>
                     {% endfor %}
                 </div>
                 <button type="submit" class="btn btn-primary">Prediksi</button>
             </form>
-            {% if data.prediction[0] %}
-                {% if data.prediction == "Tepat waktu" %}
-                    <div class="alert alert-success shadow-lg p-3 my-5 rounded">
-                        <div class="m-3">
-                            <center>
-                                <h3>{{ data.prediction }}</h3>
-                            </center>
-                        </div>
+            {% if data.request.error_message %}
+                <div class="alert alert-danger shadow-lg p-3 my-5 rounded">
+                    <div class="m-3">
+                        <center>
+                            <h3>{{ data.request.error_message }}</h3>
+                        </center>
                     </div>
-                {% else %}
-                    <div class="alert alert-warning shadow-lg p-3 my-5 rounded">
-                        <div class="m-3">
-                            <center>
-                                <h3>{{ data.prediction }}</h3>
-                            </center>
-                        </div>
-                    </div>
-                {% endif %}
+                </div>
             {% endif %}
             <!-- Modal -->
             <div class="modal fade"
