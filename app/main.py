@@ -29,12 +29,10 @@ def index():
             form_data = collect_data_from_form(request.form)
         except ValueError as e:
             data["error"] = str(e)
-            logging.error(str(e))
             return render_template("predict.html", data=data)
 
         data["request"] = form_data.model_dump()
         prediction_response = predictor.predict(form_data)
-        print(prediction_response)
         data["prediction"] = prediction_response.prediction
 
         return render_template("predict.html", data=data)
