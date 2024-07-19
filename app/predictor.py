@@ -23,15 +23,4 @@ class Predictor:
         })
 
         prediction = self.model.predict(df)[0]
-        print(prediction)
-        print(prediction)
-        print(prediction)
-        print(prediction)
-        print(prediction)
-        print(prediction)
-        print(prediction)
-        print(prediction)
-        print(prediction)
-        print(prediction)
-        print(prediction)
         return PredictionResponse(prediction=prediction)
