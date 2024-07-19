@@ -42,7 +42,7 @@
                 </div>
             </div>
         </div>
-        {% if data == "Tepat waktu" %}
+        {% if data.prediction == "Tepat waktu" %}
         <div class="alert alert-success shadow-lg p-3 my-5 rounded">
             <div class="m-3">
                 <center>
@@ -52,7 +52,7 @@
                 </center>
             </div>
         </div>
-        {% elif data == "Tidak tepat waktu" %}
+        {% elif data.prediction == "Tidak tepat waktu" %}
         <div class="alert alert-warning shadow-lg p-3 my-5 rounded">
             <div class="m-3">
                 <center>

@@ -22,16 +22,20 @@
                 </div>
             </div>
             <form action="/result" method="POST">
-                <div class="form-group">
-                    <label for="asal_sma">Asal SMA:</label>
-                    <input type="text"
-                           class="form-control"
-                           id="asal_sma"
-                           name="asal_sma"
-                           {% if data.request.asal_sma %}value = "{{ data.request.asal_sma }}"{% endif %}
-                           required>
-                </div>
                 <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label for="asal_sma">Asal SMA:</label>
+                        <input type="text"
+                            class="form-control"
+                            id="asal_sma"
+                            name="asal_sma"
+                            {% if data.request.asal_sma %}value = "{{ data.request.asal_sma }}"{% endif %}
+                            required>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="penghasilan_orang_tua">Penghasilan Orang Tua:</label>
+                        <input type="number" class="form-control" id="penghasilan_orang_tua" name="penghasilan_orang_tua" {% if data.request.penghasilan_orang_tua %}value = {{ data.request.penghasilan_orang_tua }}{% endif %} required>
+                    </div>
                     <div class="col-md-6 form-group">
                         <label for="n_toefl">TOEFL:</label>
                         <input type="number" class="form-control" id="n_toefl" name="n_toefl" {% if data.request.n_toefl %}value = {{ data.request.n_toefl }}{% endif %} required>
@@ -78,11 +82,11 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Prediksi</button>
             </form>
-            {% if data.request.error_message %}
+            {% if data.error_message %}
                 <div class="alert alert-danger shadow-lg p-3 my-5 rounded">
                     <div class="m-3">
                         <center>
-                            <h3>{{ data.request.error_message }}</h3>
+                            <h3>{{ data.error_message }}</h3>
                         </center>
                     </div>
                 </div>

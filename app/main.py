@@ -1,43 +1,19 @@
-import os
-import joblib
-import pandas as pd
-import numpy as np
 from flask import Flask, render_template, request
+from utils import collect_data_from_form, is_smt_valid
 from vars import jalur, prodi, jenis_kelamin
+from predictor import Predictor
+import logging
 
 app = Flask(__name__)
-
-model = joblib.load(os.path.join(os.path.dirname(__file__), "model_logistik.pkl"))
-
-
-def is_smt_valid(prodi_code, ips):
-    # cek minimal lama studi
-    for _, kode, minimal_studi in prodi:
-        if kode == prodi_code:
-            if len(ips) < minimal_studi:
-                return False
-
-    return True
+predictor = Predictor()
 
 
-def predict(n_toefl, ipk, jumlah_semester, prodi_code, jenis_kelamin_code, jalur_code):
-    if ipk <= 2:
-        return ["Tidak tepat waktu"]
-    df = pd.DataFrame(
-        {
-            "n_toefl": [n_toefl],
-            "ipk": [ipk],
-            "jumlah_semester": [jumlah_semester],
-            "prodi_code": [prodi_code],
-            "jenis_kelamin_code": [jenis_kelamin_code],
-            "jalur_code": [jalur_code],
-        },
-    )
-
-    return model.predict(df)
+@app.route("/", methods=["GET"])
+def home():
+    return render_template("home.html")
 
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/predict", methods=["GET", "POST"])
 def index():
     data = {
         "vars": {
@@ -49,59 +25,28 @@ def index():
         "prediction": [None],
     }
     if request.method == "POST":
-        asal_sma = request.form["asal_sma"]
-        n_toefl = int(request.form["n_toefl"])
-        prodi_code = int(request.form["prodi_code"])
-        jenis_kelamin_code = int(request.form["jenis_kelamin_code"])
-        jalur_code = int(request.form["jalur_code"])
+        try:
+            form_data = collect_data_from_form(request.form)
+        except ValueError as e:
+            data["error"] = str(e)
+            logging.error(str(e))
+            return render_template("predict.html", data=data)
 
-        ips = []
-        for i in range(1, 15):
-            ip = request.form[f"ip_semester_{i}"]
-            if ip:
-                ips.append(float(request.form[f"ip_semester_{i}"]))
-        ips = np.array(ips, dtype=float)
-   
-        data["request"] = {
-            "asal_sma": asal_sma,
-            "n_toefl": n_toefl,
-            "ipk": np.mean(ips),
-            "jumlah_semester": len(ips),
-            "prodi_code": prodi_code,
-            "jenis_kelamin_code": jenis_kelamin_code,
-            "jalur_code": jalur_code,
-            "ips": ips
-        },
+        data["request"] = form_data.model_dump()
+        prediction_response = predictor.predict(form_data)
+        print(prediction_response)
+        data["prediction"] = prediction_response.prediction
 
-        data["prediction"] = predict(
-            n_toefl=n_toefl,
-            ipk=np.mean(ips),
-            jumlah_semester=len(ips),
-            prodi_code=prodi_code,
-            jenis_kelamin_code=jenis_kelamin_code,
-            jalur_code=jalur_code,
-        )[0]
+        return render_template("predict.html", data=data)
+    return render_template("predict.html", data=data)
 
-        return render_template("index.html", data=data)
-    return render_template("index.html", data=data)
 
 @app.route("/result", methods=["GET", "POST"])
 def result():
     if request.method == "POST":
-        asal_sma = request.form["asal_sma"]
-        n_toefl = int(request.form["n_toefl"])
-        prodi_code = int(request.form["prodi_code"])
-        jenis_kelamin_code = int(request.form["jenis_kelamin_code"])
-        jalur_code = int(request.form["jalur_code"])
-
-        ips = []
-        for i in range(1, 15):
-            ip = request.form[f"ip_semester_{i}"]
-            if ip:
-                ips.append(float(request.form[f"ip_semester_{i}"]))
-        ips = np.array(ips, dtype=float)
-
-        if not is_smt_valid(prodi_code, ips):
+        try:
+            form_data = collect_data_from_form(request.form)
+        except ValueError as e:
             data = {
                 "vars": {
                     "jalur": jalur,
@@ -110,31 +55,25 @@ def result():
                 },
                 "request": None,
                 "prediction": [None],
+                "error": str(e),
             }
-            data["request"] = {
-                "asal_sma": asal_sma,
-                "n_toefl": n_toefl,
-                "ipk": np.mean(ips),
-                "jumlah_semester": len(ips),
-                "prodi_code": prodi_code,
-                "jenis_kelamin_code": jenis_kelamin_code,
-                "jalur_code": jalur_code,
-                "ips": ips,
-                "error_message": "Nilai semester tidak terpenuhi"
+            return render_template("predict.html", data=data)
+
+        if not is_smt_valid(form_data.prodi_code, form_data.ips):
+            data = {
+                "vars": {
+                    "jalur": jalur,
+                    "prodi": prodi,
+                    "jenis_kelamin": jenis_kelamin,
+                },
+                "request": form_data.model_dump(),
+                "prediction": [None],
+                "error_message": "Nilai semester tidak terpenuhi",
             }
+            return render_template("predict.html", data=data)
 
-            return render_template("index.html", data=data)
-
-        data = predict(
-            n_toefl=n_toefl,
-            ipk=np.mean(ips),
-            jumlah_semester=len(ips),
-            prodi_code=prodi_code,
-            jenis_kelamin_code=jenis_kelamin_code,
-            jalur_code=jalur_code,
-        )[0]
-
-        return render_template("result.html", data=data)
+        prediction_response = predictor.predict(form_data)
+        return render_template("result.html", data=prediction_response.model_dump())
     return render_template("result.html", data=None)
 
 
