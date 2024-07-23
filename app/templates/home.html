@@ -10,15 +10,19 @@
             margin-top: 50px;
         }
         .logo {
-            width: 100px; /* Sesuaikan ukuran logo sesuai kebutuhan */
+            width: 100px;
+            height: auto;
+        }
+        .logo-page {
+            width: 200px;
             height: auto;
         }
         </style>
     </head>
     <body>
-        <div class="container">
-            <div class="card text-white bg-primary mb-3" style="height: 10rem;">
-                <div class="card-body">
+        <div class="card text-white bg-primary mb-3" style="height: 15rem;">
+            <div class="card-body">
+                <div class="container">
                     <div class="row align-items-center h-100">
                         <div class="col-auto">
                             <img src="{{ url_for('static', filename='assets/del-logo.jpg') }}" alt="Logo" class="logo">
@@ -29,14 +33,26 @@
                     </div>
                 </div>
             </div>
-            <div class="text-center my-5">
-                <h5>Welcome and please check your graduation predictions.</h5>
-                <a href="/predict" class="btn btn-primary btn-lg my-5">Check</a>
-                <h5 class="mt-2">We will predict your graduation accuracy in a timely manner,<br>using machine learning technology to guarantee accuracy.</h5>
-            </div>
-            <br>
-            <br>
-            <br>
         </div>
+        <div class="container">
+            <div class="text-center my-5">
+                <h5>Welcome and please check your graduation predictions. We will predict your graduation accuracy in a timely manner, using machine learning technology to guarantee accuracy.</h5>
+                <div class="row my-5">
+                    <div class="col d-flex justify-content-start">
+                        <img src="{{ url_for('static', filename='assets/logo-1.png') }}" alt="Logo 1" class="logo-page">
+                    </div>
+                    <div class="col text-center">
+                        <img src="{{ url_for('static', filename='assets/logo-2.png') }}" alt="Logo 2" class="logo-page">
+                    </div>
+                    <div class="col d-flex justify-content-end">
+                        <img src="{{ url_for('static', filename='assets/logo-3.png') }}" alt="Logo 3" class="logo-page">
+                    </div>
+                </div>
+                <a href="/predict" class="btn btn-primary btn-lg my-5">Check</a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
     </body>
 </html>

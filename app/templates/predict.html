@@ -10,14 +10,23 @@
         .container {
             margin-top: 50px;
         }
+        .logo {
+            width: 100px; /* Sesuaikan ukuran logo sesuai kebutuhan */
+            height: auto;
+        }
         </style>
     </head>
     <body>
         <div class="container">
             <div class="card text-white bg-primary mb-3" style="height: 10rem;">
                 <div class="card-body">
-                    <div class="container">
-                        <h3 class="text-center mt-5">Graduation Prediction</h3>
+                    <div class="row align-items-center h-100">
+                        <div class="col-auto">
+                            <img src="{{ url_for('static', filename='assets/del-logo.jpg') }}" alt="Logo" class="logo">
+                        </div>
+                        <div class="col">
+                            <h3 class="text-center">Graduation Prediction</h3>
+                        </div>
                     </div>
                 </div>
             </div>
