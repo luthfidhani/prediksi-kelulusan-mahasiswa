@@ -4,8 +4,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Graduation Prediction</title>
-        <link rel="stylesheet"
-              href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
         <style>
         .container {
             margin-top: 50px;
@@ -30,67 +30,92 @@
                     </div>
                 </div>
             </div>
-            <form action="/result" method="POST">
-                <div class="row">
-                    <div class="col-md-6 form-group">
-                        <label for="asal_sma">Asal SMA:</label>
-                        <input type="text"
-                            class="form-control"
-                            id="asal_sma"
-                            name="asal_sma"
-                            {% if data.request.asal_sma %}value = "{{ data.request.asal_sma }}"{% endif %}
-                            required>
-                    </div>
-                    <div class="col-md-6 form-group">
-                        <label for="penghasilan_orang_tua">Penghasilan Orang Tua:</label>
-                        <input type="number" class="form-control" id="penghasilan_orang_tua" name="penghasilan_orang_tua" {% if data.request.penghasilan_orang_tua %}value = {{ data.request.penghasilan_orang_tua }}{% endif %} required>
-                    </div>
-                    <div class="col-md-6 form-group">
-                        <label for="n_toefl">TOEFL:</label>
-                        <input type="number" class="form-control" id="n_toefl" name="n_toefl" {% if data.request.n_toefl %}value = {{ data.request.n_toefl }}{% endif %} required>
-                    </div>
-                    <div class="col-md-6 form-group">
-                        <label for="prodi_code">Prodi:</label>
-                        <select class="form-control" id="prodi_code" name="prodi_code" required>
-                            {% for prodi, code, _ in data.vars.prodi %}
-                                <option value={{ code }} {% if data and data.request.prodi_code == code %}selected{% endif %}>
-                                    {{ prodi }}
-                                </option>
+            <ul class="nav nav-pills nav-fill mb-3" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="pills-prediction-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-prediction" type="button" role="tab" aria-controls="pills-prediction"
+                        aria-selected="true">Prediction</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-batch-prediction-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-batch-prediction" type="button" role="tab" aria-controls="pills-batch-prediction"
+                        aria-selected="false">Batch Prediction</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="pills-prediction" role="tabpanel" aria-labelledby="pills-prediction-tab" tabindex="0">
+                    <form action="/result" method="POST">
+                        <div class="row">
+                            <div class="col-md-6 form-group mt-3">
+                                <label for="asal_sma">Asal SMA:</label>
+                                <input type="text"
+                                    class="form-control"
+                                    id="asal_sma"
+                                    name="asal_sma"
+                                    {% if data.request.asal_sma %}value = "{{ data.request.asal_sma }}"{% endif %}
+                                    required>
+                            </div>
+                            <div class="col-md-6 form-group mt-3">
+                                <label for="penghasilan_orang_tua">Penghasilan Orang Tua:</label>
+                                <input type="number" class="form-control" id="penghasilan_orang_tua" name="penghasilan_orang_tua" {% if data.request.penghasilan_orang_tua %}value = {{ data.request.penghasilan_orang_tua }}{% endif %} required>
+                            </div>
+                            <div class="col-md-6 form-group mt-3">
+                                <label for="toefl">TOEFL:</label>
+                                <input type="number" class="form-control" id="toefl" name="toefl" {% if data.request.toefl %}value = {{ data.request.toefl }}{% endif %} required>
+                            </div>
+                            <div class="col-md-6 form-group mt-3">
+                                <label for="prodi">Prodi:</label>
+                                <select class="form-control" id="prodi" name="prodi" required>
+                                    {% for jenjang, nama_prodi in data.vars.prodi %}
+                                        <option value= "{{ nama_prodi }}" {% if data and data.request.prodi == nama_prodi %}selected{% endif %}>
+                                            {{ jenjang }} - {{ nama_prodi }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 form-group mt-3">
+                                <label for="jalur">Jalur Masuk:</label>
+                                <select class="form-control" id="jalur" name="jalur" required>
+                                    {% for jalur in data.vars.jalur %}
+                                        <option value={{ jalur }} {% if data and data.request.jalur == jalur %}selected{% endif %}>
+                                            {{ jalur }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 form-group mt-3">
+                                <label for="jenis_kelamin">Jenis Kelamin:</label>
+                                <select class="form-control"
+                                        id="jenis_kelamin"
+                                        name="jenis_kelamin"
+                                        required>
+                                    {% for jenis_kelamin in data.vars.jenis_kelamin %}
+                                        <option value={{ jenis_kelamin }} {% if data and data.request.jenis_kelamin == jenis_kelamin %}selected{% endif %}>
+                                            {{ jenis_kelamin }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% for i in range(1, 15) %}
+                                <div class="col-md-2 form-group mt-3">
+                                    <label for="ip_semester_{{ i }}">IP Semester {{ i }}:</label>
+                                    <input type="number" class="form-control" id="ip_semester_{{ i }}" name="ip_semester_{{ i }}" step="0.001" {% if data.request %} value = {{ data.request['ip_semester_' + i|string] }}{% endif %} >
+                                </div>
                             {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-md-6 form-group">
-                        <label for="jalur_code">Jalur Masuk:</label>
-                        <select class="form-control" id="jalur_code" name="jalur_code" required>
-                            {% for jalur, code in data.vars.jalur %}
-                                <option value={{ code }} {% if data and data.request.jalur_code == code %}selected{% endif %}>
-                                    {{ jalur }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-md-6 form-group">
-                        <label for="jenis_kelamin_code">Jenis Kelamin:</label>
-                        <select class="form-control"
-                                id="jenis_kelamin_code"
-                                name="jenis_kelamin_code"
-                                required>
-                            {% for gender, code in data.vars.jenis_kelamin %}
-                                <option value={{ code }} {% if data and data.request.jenis_kelamin_code == code %}selected{% endif %}>
-                                    {{ gender }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    {% for i in range(1, 15) %}
-                        <div class="col-md-6 form-group">
-                            <label for="ip_semester_{{ i }}">IP Semester {{ i }}:</label>
-                            <input type="number" class="form-control" id="ip_semester_{{ i }}" name="ip_semester_{{ i }}" step="0.001" {% if data.request %} value = {{ data.request.ips[i-1] }}{% endif %} >
                         </div>
-                    {% endfor %}
+                        <button type="submit" class="btn btn-primary mt-3">Prediksi</button>
+                    </form>
                 </div>
-                <button type="submit" class="btn btn-primary">Prediksi</button>
-            </form>
+
+                <div class="tab-pane fade show" id="pills-batch-prediction" role="tabpanel" aria-labelledby="pills-batch-prediction-tab" tabindex="0">
+                    <form action="/result" method="POST" enctype="multipart/form-data">
+                        <label for="formFile" class="form-label">Upload batch prediction. Please use the appropriate <a href="/static/docs/sample.xlsx">format as follows.</a></label>
+                        <input class="form-control form-control" id="formFile" type="file" name="file">
+                        <button type="submit" class="btn btn-primary mt-3">Upload</button>
+                    </form>
+                </div>
+            </div>
+            
             {% if data.error_message %}
                 <div class="alert alert-danger shadow-lg p-3 my-5 rounded">
                     <div class="m-3">
@@ -122,4 +147,7 @@
             <br>
         </div>
     </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"></script>
 </html>

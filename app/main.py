@@ -1,21 +1,16 @@
+import os
+
 from flask import Flask, render_template, request
-from utils import collect_data_from_form, is_smt_valid
+
+from utils import data_validation, is_smt_valid, is_file_allowed
 from vars import jalur, prodi, jenis_kelamin
 from predictor import Predictor
-import logging
 
 app = Flask(__name__)
 predictor = Predictor()
 
-
-@app.route("/", methods=["GET"])
-def home():
-    return render_template("home.html")
-
-
-@app.route("/predict", methods=["GET", "POST"])
-def index():
-    data = {
+def prepare_data():
+    return {
         "vars": {
             "jalur": jalur,
             "prodi": prodi,
@@ -23,57 +18,71 @@ def index():
         },
         "request": None,
         "prediction": [None],
+        "error_message": None
     }
+
+@app.route("/", methods=["GET"])
+def home():
+    return render_template("home.html")
+
+@app.route("/predict", methods=["GET", "POST"])
+def predict():
+    data = prepare_data()
+
     if request.method == "POST":
         try:
-            form_data = collect_data_from_form(request.form)
+            validated_data = data_validation(request.form)
+            data["request"] = validated_data.model_dump()
+            prediction_response = predictor.predict(validated_data)
+            data["prediction"] = prediction_response.prediction
         except ValueError as e:
-            data["error"] = str(e)
-            return render_template("predict.html", data=data)
+            data["error_message"] = str(e)
 
-        data["request"] = form_data.model_dump()
-        prediction_response = predictor.predict(form_data)
-        data["prediction"] = prediction_response.prediction
-
-        return render_template("predict.html", data=data)
     return render_template("predict.html", data=data)
-
 
 @app.route("/result", methods=["GET", "POST"])
 def result():
+    data = prepare_data()
+
     if request.method == "POST":
-        try:
-            form_data = collect_data_from_form(request.form)
-        except ValueError as e:
-            data = {
-                "vars": {
-                    "jalur": jalur,
-                    "prodi": prodi,
-                    "jenis_kelamin": jenis_kelamin,
-                },
-                "request": None,
-                "prediction": [None],
-                "error": str(e),
-            }
-            return render_template("predict.html", data=data)
+        
+        if request.files:
+            data["prediction_type"] = "batch"
+            file = request.files.get("file")
+            if file.filename == "":
+                data["error_message"] = "No file selected"
+                return render_template("predict.html", data=data)
+            elif not is_file_allowed(file.filename):
+                data["error_message"] = "Filename must be an Excel file (.xlsx or .xls) and the file name must not be 'prediction_result'"
+                return render_template("predict.html", data=data)
+            else:
+                file_path = os.path.join("app/static/temp", file.filename)
+                file.save(file_path)
+                try:
+                    result_file_path = predictor.batch_prediction(file_path)
+                except Exception as e:
+                    data["error_message"] = str(e)
+                    return render_template("predict.html", data=data)
+                finally:
+                    os.remove(file_path)
+                data["prediction"] = result_file_path
+            
+            return render_template("result.html", data=data)
 
-        if not is_smt_valid(form_data.prodi_code, form_data.ips):
-            data = {
-                "vars": {
-                    "jalur": jalur,
-                    "prodi": prodi,
-                    "jenis_kelamin": jenis_kelamin,
-                },
-                "request": form_data.model_dump(),
-                "prediction": [None],
-                "error_message": "Nilai semester tidak terpenuhi",
-            }
-            return render_template("predict.html", data=data)
+        else:
+            try:
+                validated_data = data_validation(request.form)
+                if not is_smt_valid(validated_data):
+                    data["request"] = validated_data.model_dump()
+                    data["error_message"] = "Semester values not met"
+                else:
+                    prediction_response = predictor.predict(validated_data).model_dump()
+                    prediction_response["prediction_type"] = "realtime"
+                    return render_template("result.html", data=prediction_response)
+            except ValueError as e:
+                data["error_message"] = str(e)
 
-        prediction_response = predictor.predict(form_data)
-        return render_template("result.html", data=prediction_response.model_dump())
-    return render_template("result.html", data=None)
-
+    return render_template("predict.html", data=data)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
