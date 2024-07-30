@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, render_template, request
 
-from utils import data_validation, is_smt_valid, is_file_allowed
+from utils import data_validation, is_file_allowed
 from vars import jalur, prodi, jenis_kelamin
 from predictor import Predictor
 
@@ -72,14 +72,12 @@ def result():
         else:
             try:
                 validated_data = data_validation(request.form)
-                if not is_smt_valid(validated_data):
-                    data["request"] = validated_data.model_dump()
-                    data["error_message"] = "Semester values not met"
-                else:
-                    prediction_response = predictor.predict(validated_data).model_dump()
-                    prediction_response["prediction_type"] = "realtime"
-                    return render_template("result.html", data=prediction_response)
+                prediction_response = predictor.predict(validated_data).model_dump()
+                prediction_response["prediction_type"] = "realtime"
+                return render_template("result.html", data=prediction_response)
             except ValueError as e:
+                import traceback
+                print(traceback.format_exc())
                 data["error_message"] = str(e)
 
     return render_template("predict.html", data=data)

@@ -13,20 +13,15 @@ class Predictor:
     def _create_feature_dataframe(self, request_data: PredictionRequest) -> pd.DataFrame:
         """Membuat DataFrame dari data permintaan prediksi."""
         return pd.DataFrame({
-            "n_toefl": [request_data.toefl],
-            "ipk": [request_data.ipk],
-            "jumlah_semester": [request_data.jumlah_semester],
-            "prodi_code": [request_data.prodi_code],
-            "jenis_kelamin_code": [request_data.jenis_kelamin_code],
-            "jalur_code": [request_data.jalur_code],
+            "nama sma": [request_data.nama_sma_code],
+            "jalur": [request_data.jalur_code],
             "penghasilan_orang_tua": [request_data.penghasilan_orang_tua],
+            "prodi": [request_data.prodi_code],
+            "ipk": [request_data.ipk],
         })
 
     def _handle_prediction_request(self, request_data: PredictionRequest) -> PredictionResponse:
         """Menangani permintaan prediksi individu dan menghasilkan respons."""
-        if request_data.ipk <= 2:
-            return PredictionResponse(prediction="Tidak tepat waktu")
-        
         df = self._create_feature_dataframe(request_data)
         prediction = self.model.predict(df)[0]
         return PredictionResponse(prediction=prediction, **request_data.model_dump())

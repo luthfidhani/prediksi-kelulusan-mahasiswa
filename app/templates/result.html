@@ -25,6 +25,24 @@
         #loadingText {
             margin-top: 10px;
         }
+        body {
+            background: linear-gradient(to bottom, #6AA8E2, white, #6AA8E2);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .logo {
+            width: 100px; /* Sesuaikan ukuran logo sesuai kebutuhan */
+            height: auto;
+        }
+        .nav-link.active {
+            background-color: #315E88 !important;
+            color: white !important;
+        }
     </style>
 </head>
 <body>
@@ -35,13 +53,15 @@
         <div id="loadingText">Analyzing</div>
     </div>
     <div class="container" style="display: none;">
-        <div class="card text-white bg-primary mb-3" style="height: 10rem;">
-            <div class="card-body">
-                <div class="container">
-                    <h3 class="text-center mt-5">Graduation Prediction</h3>
-                </div>
+        <div class="row align-items-center h-100">
+            <div class="col-auto">
+                <img src="{{ url_for('static', filename='assets/del-logo.jpg') }}" alt="Logo" class="logo">
+            </div>
+            <div class="col">
+                <h1 class="text-center">Timely Graduation Prediction</h1>
             </div>
         </div>
+        <hr>
         
         {% if data.prediction_type == "batch" %}
             <div class="alert alert-success shadow-lg p-3 my-5 rounded">
