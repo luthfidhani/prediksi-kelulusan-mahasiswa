@@ -23,7 +23,10 @@ class Predictor:
     def _handle_prediction_request(self, request_data: PredictionRequest) -> PredictionResponse:
         """Menangani permintaan prediksi individu dan menghasilkan respons."""
         df = self._create_feature_dataframe(request_data)
-        prediction = self.model.predict(df)[0]
+        if df["ipk"][0] <= 2.0:
+            prediction = "Tidak tepat waktu"
+        else:
+            prediction = self.model.predict(df)[0]
         return PredictionResponse(prediction=prediction, **request_data.model_dump())
 
     def predict(self, request_data: PredictionRequest) -> PredictionResponse:

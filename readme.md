@@ -29,7 +29,10 @@ Aplikasi ini bertujuan untuk memprediksi apakah seorang mahasiswa akan lulus tep
 4. Buka browser dan akses `localhost:5000`
 
 
-## 📸 Screenshot 📸
-![Home](images/home.jpeg)
-![Home](images/tepat_waktu.jpeg)
-![Home](images/tidak_tepat_waktu.jpeg)
+## 📸 Screenshots 📸
+![Home](images/1.jpeg)
+![Home](images/2.jpeg)
+![Home](images/3.jpeg)
+![Home](images/4.jpeg)
+![Home](images/5.jpeg)
+![Home](images/6.jpeg)
